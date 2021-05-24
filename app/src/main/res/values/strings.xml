@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Pay It Forward</string>
+    <string name="txt_payment_method">Payment methods</string>
+</resources>
