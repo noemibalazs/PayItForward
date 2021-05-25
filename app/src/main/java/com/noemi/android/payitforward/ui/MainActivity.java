@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.noemi.android.payitforward.R;
+import com.noemi.android.payitforward.adapter.PaymentAdapter;
 import com.noemi.android.payitforward.viewModel.PaymentViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private PaymentViewModel paymentViewModel;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
+    private PaymentAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +38,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpRv() {
+        adapter = new PaymentAdapter();
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
     }
 
     private void initObservers() {
+        paymentViewModel.getPaymentMethods();
+
+        paymentViewModel.getPaymentMethodList().observe(this, paymentMethods -> {
+            if (!paymentMethods.isEmpty()) {
+                adapter.submitList(paymentMethods);
+            }
+        });
+
         paymentViewModel.getErrorEvent().observe(this, error -> {
             Toast.makeText(this, error, Toast.LENGTH_LONG).show();
         });

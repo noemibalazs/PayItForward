@@ -26,9 +26,9 @@ public class PaymentViewModel extends ViewModel {
     private static final String TAG = PaymentViewModel.class.getSimpleName();
     private PaymentRepository paymentRepository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<List<PaymentMethod>> paymentList;
-    private MutableLiveData<Boolean> progressEvent;
-    private MutableLiveData<String> errorEvent;
+    private MutableLiveData<List<PaymentMethod>> paymentList = new MutableLiveData<>();
+    private MutableLiveData<Boolean> progressEvent = new MutableLiveData<>();
+    private MutableLiveData<String> errorEvent = new MutableLiveData<>();
 
     public PaymentViewModel() {
         this.paymentRepository = PaymentRepository.getInstance();
@@ -75,6 +75,10 @@ public class PaymentViewModel extends ViewModel {
 
     public LiveData<String> getErrorEvent() {
         return errorEvent;
+    }
+
+    public LiveData<List<PaymentMethod>> getPaymentMethodList() {
+        return paymentList;
     }
 
     @Override
