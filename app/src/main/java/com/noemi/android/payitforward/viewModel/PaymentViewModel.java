@@ -1,14 +1,16 @@
 package com.noemi.android.payitforward.viewModel;
 
+import android.app.Application;
 import android.util.Log;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.noemi.android.payitforward.api.model.PaymentMethod;
 import com.noemi.android.payitforward.api.model.PaymentResponse;
 import com.noemi.android.payitforward.api.remoteDataSource.PaymentRepository;
+import com.noemi.android.payitforward.util.SharedPref;
 
 import java.util.List;
 
@@ -21,17 +23,21 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class PaymentViewModel extends ViewModel {
+public class PaymentViewModel extends AndroidViewModel {
 
     private static final String TAG = PaymentViewModel.class.getSimpleName();
     private PaymentRepository paymentRepository;
+    private SharedPref sharedPref;
+
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private MutableLiveData<List<PaymentMethod>> paymentList = new MutableLiveData<>();
     private MutableLiveData<Boolean> progressEvent = new MutableLiveData<>();
     private MutableLiveData<String> errorEvent = new MutableLiveData<>();
 
-    public PaymentViewModel() {
+    public PaymentViewModel(Application application) {
+        super(application);
         this.paymentRepository = PaymentRepository.getInstance();
+        this.sharedPref = new SharedPref(application.getApplicationContext());
     }
 
     public void getPaymentMethods() {
@@ -58,6 +64,7 @@ public class PaymentViewModel extends ViewModel {
                         Log.d(TAG, "onSuccess() response size: " + paymentResponse.getAcceptedMethods().getPaymentMethodList().size());
                         List<PaymentMethod> paymentMethods = paymentResponse.getAcceptedMethods().getPaymentMethodList();
                         paymentList.setValue(paymentMethods);
+                        sharedPref.savePayments(paymentMethods);
                     }
 
                     @Override

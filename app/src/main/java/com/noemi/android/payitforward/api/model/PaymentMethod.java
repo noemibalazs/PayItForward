@@ -1,10 +1,13 @@
 package com.noemi.android.payitforward.api.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
-public class PaymentMethod {
+public class PaymentMethod implements Parcelable {
 
     @SerializedName("code")
     private String code;
@@ -17,6 +20,32 @@ public class PaymentMethod {
 
     @SerializedName("links")
     private PaymentLogo logo;
+
+    protected PaymentMethod(Parcel in) {
+        code = in.readString();
+        name = in.readString();
+        method = in.readString();
+        logo = in.readParcelable(PaymentLogo.class.getClassLoader());
+    }
+
+    public static final Creator<PaymentMethod> CREATOR = new Creator<PaymentMethod>() {
+        @Override
+        public PaymentMethod createFromParcel(Parcel in) {
+            return new PaymentMethod(in);
+        }
+
+        @Override
+        public PaymentMethod[] newArray(int size) {
+            return new PaymentMethod[size];
+        }
+    };
+
+    public PaymentMethod(String code, String name, String method, PaymentLogo logo) {
+        this.code = code;
+        this.name = name;
+        this.method = method;
+        this.logo = logo;
+    }
 
     public String getCode() {
         return code;
@@ -64,5 +93,18 @@ public class PaymentMethod {
     @Override
     public int hashCode() {
         return Objects.hash(code, name, method, logo);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(code);
+        parcel.writeString(name);
+        parcel.writeString(method);
+        parcel.writeParcelable(logo, i);
     }
 }
