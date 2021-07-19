@@ -1,6 +1,6 @@
 Pay It Forward
 
-Application written in Java for have fun.
+The application is written in Java just for has fun.
 
 Todo: Design and build an application that displaying a list of payment methods.
 
